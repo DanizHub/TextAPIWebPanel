@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ניקוי הודעות</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      direction: rtl;
+      text-align: center;
+      padding: 30px;
+      background-color: #f0f0f0;
+    }
+
+    input[type="number"] {
+      width: 80%;
+      padding: 12px;
+      font-size: 16px;
+      margin: 12px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      padding: 12px 24px;
+      font-size: 16px;
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #c82333;
+    }
+
+    #response {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h2>ניקוי הודעות מהשרת</h2>
+
+  <input type="number" id="passwordInput" placeholder="סיסמה (2 ספרות)" maxlength="2" />
+  <br />
+  <button onclick="clearMessages()">נקה את כל ההודעות</button>
+
+  <p id="response"></p>
+
+  <script>
+    async function clearMessages() {
+      const password = document.getElementById("passwordInput").value.trim();
+
+      if (!password) {
+        document.getElementById("response").innerText = "אנא הזן סיסמה.";
+        return;
+      }
+
+      const response = await fetch("https://textapiserver.onrender.com/clear", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password })
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        document.getElementById("response").innerText = "הודעות נמחקו בהצלחה!";
+      } else {
+        document.getElementById("response").innerText = "שגיאה: " + (result.error || "לא הצלחנו לנקות.");
+      }
+    }
+  </script>
+</body>
+</html>

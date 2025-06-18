@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>שליחת הודעה לשרת</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      direction: rtl;
+      text-align: center;
+      padding: 20px;
+      background-color: #f0f0f0;
+    }
+
+    input[type="text"], input[type="file"], input[type="number"] {
+      width: 90%;
+      padding: 10px;
+      font-size: 16px;
+      margin: 10px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      padding: 12px 24px;
+      font-size: 16px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #response {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h2>שליחת טקסט או תמונה</h2>
+
+  <input type="text" id="messageInput" placeholder="כתוב כאן טקסט לשליחה" />
+  <br />
+  <input type="number" id="passwordInput" placeholder="סיסמה (2 ספרות)" maxlength="2" />
+  <br />
+  <button onclick="sendText()">שלח טקסט</button>
+
+  <hr />
+
+  <input type="file" id="imageInput" accept="image/*" />
+  <br />
+  <button onclick="sendImage()">שלח תמונה</button>
+
+  <p id="response"></p>
+
+  <script>
+    async function sendText() {
+      const text = document.getElementById("messageInput").value.trim();
+      const password = document.getElementById("passwordInput").value.trim();
+
+      if (!text) {
+        document.getElementById("response").innerText = "אנא כתוב הודעה.";
+        return;
+      }
+
+      if (!password) {
+        document.getElementById("response").innerText = "אנא הזן סיסמה.";
+        return;
+      }
+
+      const response = await fetch("https://textapiserver.onrender.com/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text, password })
+      });
+
+      if (response.ok) {
+        document.getElementById("response").innerText = "ההודעה נשלחה!";
+        document.getElementById("messageInput").value = "";
+      } else {
+        const error = await response.json();
+        document.getElementById("response").innerText = "שגיאה: " + (error.error || "שליחה נכשלה.");
+      }
+    }
+
+    async function sendImage() {
+      const fileInput = document.getElementById("imageInput");
+      const password = document.getElementById("passwordInput").value.trim();
+
+      if (!fileInput.files.length) {
+        document.getElementById("response").innerText = "בחר תמונה קודם.";
+        return;
+      }
+
+      if (!password) {
+        document.getElementById("response").innerText = "אנא הזן סיסמה.";
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("image", fileInput.files[0]);
+      formData.append("password", password);
+
+      const response = await fetch("https://textapiserver.onrender.com/upload", {
+        method: "POST",
+        body: formData
+      });
+
+      if (response.ok) {
+        document.getElementById("response").innerText = "התמונה נשלחה!";
+        document.getElementById("imageInput").value = "";
+      } else {
+        const error = await response.json();
+        document.getElementById("response").innerText = "שגיאה: " + (error.error || "שליחה נכשלה.");
+      }
+    }
+  </script>
+</body>
+</html>

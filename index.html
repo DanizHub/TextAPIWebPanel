@@ -1,7 +1,80 @@
-  ...
+<!DOCTYPE html>
+<html lang="he">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>שליחת הודעה לשרת</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      direction: rtl;
+      text-align: center;
+      padding: 20px;
+      background-color: #f0f0f0;
+    }
+
+    input[type="text"], input[type="file"], input[type="number"] {
+      width: 90%;
+      padding: 10px;
+      font-size: 16px;
+      margin: 10px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      padding: 12px 24px;
+      font-size: 16px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #response {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    .footer-image {
+      margin-top: 40px;
+    }
+
+    .footer-image img {
+      display: block;
+      margin: 0 auto;
+      max-width: 300px;
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h2>שליחת טקסט או תמונה</h2>
+
+  <input type="text" id="messageInput" placeholder="כתוב כאן טקסט לשליחה" />
+  <br />
+  <input type="number" id="passwordInput" placeholder="סיסמה (2 ספרות)" maxlength="2" />
+  <br />
+  <button onclick="sendText()">שלח טקסט</button>
+
+  <hr />
+
+  <input type="file" id="imageInput" accept="image/*" />
+  <br />
+  <button onclick="sendImage()">שלח תמונה</button>
+
   <p id="response"></p>
 
-  <img src="ss.jpg" alt="Footer Image" style="width: 100%; max-width: 400px; margin-top: 30px; border-radius: 8px;" />
+  <div class="footer-image">
+    <img src="ss.jpg" alt="תמונה תחתונה" loading="lazy" />
+  </div>
 
   <script>
     async function sendText() {
